@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="YoutubeDlWrapper">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Youtube-dl-wrapper/out/artifacts/YoutubeDlWrapper/YoutubeDlWrapper.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
