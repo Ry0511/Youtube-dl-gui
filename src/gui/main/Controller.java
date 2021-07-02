@@ -70,25 +70,22 @@ public class Controller {
     /**
      *
      */
-    @FXML
-    private void downloadSingle(ActionEvent actionEvent) {
-
+    public void loadOptionBuilder(ActionEvent actionEvent) throws IOException {
+        gui.main.option.builder.Controller.loadScene();
     }
 
     /**
      *
      */
     @FXML
-    private void downloadBatch(ActionEvent actionEvent) throws IOException {
-        final String optionScene = "Option_Picker.fxml";
-        final String title = "Option Builder";
-        FXMLLoader loader =
-                new FXMLLoader(gui.main.option.builder
-                        .Controller.class.getResource(optionScene));
-        Parent root = loader.load();
-        gui.main.option.builder.Controller e = loader.getController();
-        e.initialise();
-        Main.showNewStage(new Scene(root, 852, 512), title);
+    private void downloadSingle(ActionEvent actionEvent) {
+    }
+
+    /**
+     *
+     */
+    @FXML
+    private void downloadBatch(ActionEvent actionEvent) {
     }
 
     /**
