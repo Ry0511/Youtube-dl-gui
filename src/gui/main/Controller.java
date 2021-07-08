@@ -1,12 +1,9 @@
 package gui.main;
 
-import gui.main.gridpane.manager.GridManager;
-import gui.main.process.tracker.gui.TrackerWindow;
+import gui.utility.manager.GridManager;
+import gui.utility.gui.TrackerWindow;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import youtube.dl.wrapper.ytdl.YoutubeDl;
 
@@ -71,7 +68,7 @@ public class Controller {
      *
      */
     public void loadOptionBuilder(ActionEvent actionEvent) throws IOException {
-        gui.main.option.builder.Controller.loadScene();
+        gui.option.builder.Controller.loadScene();
     }
 
     /**

@@ -1,4 +1,4 @@
-package gui.main.process.tracker.gui;
+package gui.utility.gui;
 
 
 import javafx.scene.control.Label;

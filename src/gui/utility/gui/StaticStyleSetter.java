@@ -1,4 +1,4 @@
-package gui.main.process.tracker.gui;
+package gui.utility.gui;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

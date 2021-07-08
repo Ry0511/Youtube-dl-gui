@@ -1,4 +1,4 @@
-package gui.main.gridpane.manager;
+package gui.utility.manager;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

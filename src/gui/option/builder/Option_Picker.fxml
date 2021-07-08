@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="546.0" prefWidth="852.0" stylesheets="@../../bootstrap3.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.option.builder.Controller">
+   <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+   </padding>
+   <right>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <ListView fx:id="selectedView" onKeyPressed="#updateDisplayOption" onMouseClicked="#removeOption" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </BorderPane.margin>
+            </ListView>
+         </center>
+         <bottom>
+            <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="8.0" prefWrapLength="150.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#removeSelectedOption" text="&lt;" textAlignment="CENTER">
+                     <FlowPane.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </FlowPane.margin>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </Button>
+                  <Button alignment="CENTER" layoutX="181.0" layoutY="16.0" mnemonicParsing="false" onAction="#loadOption" text="Load" textAlignment="CENTER">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <FlowPane.margin>
+                        <Insets />
+                     </FlowPane.margin>
+                  </Button>
+                  <Button alignment="CENTER" layoutX="230.0" layoutY="16.0" mnemonicParsing="false" onAction="#saveOption" text="Save" textAlignment="CENTER">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </BorderPane.margin>
+            </FlowPane>
+         </bottom>
+         <BorderPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+      </BorderPane>
+   </right>
+   <left>
+      <BorderPane BorderPane.alignment="CENTER">
+         <bottom>
+            <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="8.0" prefWrapLength="150.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" layoutX="230.0" layoutY="16.0" mnemonicParsing="false" onAction="#addSelectedOption" text="&gt;" textAlignment="CENTER">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <FlowPane.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </FlowPane.margin>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </BorderPane.margin>
+            </FlowPane>
+         </bottom>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+         <center>
+            <ListView fx:id="optionView" onKeyPressed="#updateDisplayOption" onMouseClicked="#addOption" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </BorderPane.margin>
+            </ListView>
+         </center>
+      </BorderPane>
+   </left>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <center>
+            <TextArea fx:id="textArea" editable="false" wrapText="true" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextArea>
+         </center>
+         <BorderPane.margin>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </BorderPane>
+   </center>
+   <top>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <FlowPane alignment="CENTER" hgap="12.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#showMainScene" text="Return">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </Button>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </BorderPane.margin>
+            </FlowPane>
+         </center>
+         <left>
+            <FlowPane alignment="CENTER" prefWrapLength="250.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Options" textAlignment="CENTER">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </FlowPane>
+         </left>
+         <right>
+            <FlowPane alignment="CENTER" prefWrapLength="250.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Selected" textAlignment="CENTER">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </FlowPane>
+         </right>
+      </BorderPane>
+   </top>
+</BorderPane>
