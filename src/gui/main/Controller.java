@@ -1,12 +1,13 @@
 package gui.main;
 
+import gui.downloadtracker.TrackerWindow;
+import gui.downloadtracker.trackercontainer.TrackerContainer;
 import gui.optionbuilder.OptionPicker;
 import gui.utility.fxmlscene.FXMLScene;
 import gui.utility.fxmldialog.FXMLDialog;
 import gui.utility.input.FXMLScenes;
 import gui.utility.input.fileinput.FileInputController;
 import gui.utility.manager.GridManager;
-import gui.utility.gui.TrackerWindow;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -51,23 +52,17 @@ public class Controller {
     private GridManager gridManager;
 
     /**
-     *
+     * This will be removed, as it's primarily for testing. In it's place it
+     * there will just be information about yt-dl, and ffmpeg.
      */
     public void initialise() {
-        gridManager = new GridManager(this.gridPane);
-        final int rows = 2;
-        final int columns = 3;
-        gridManager.setGridSize(rows, columns, true);
+        FXMLScene e = new FXMLScene(new TrackerContainer());
 
-        // Place Nodes
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                TrackerWindow t = new TrackerWindow();
-                gridManager.addNode(t, i, j);
-                gridManager.showNode(i, j, t::getIfMatch);
-                System.out.printf("Placed Node: {%s}, {%s, %s}%n", t, i, j);
-            }
-        }
+        Stage s = new Stage();
+        s.setScene(e.getScene());
+
+        s.setTitle("Tracker Window");
+        s.showAndWait();
     }
 
     /**

@@ -3,6 +3,7 @@ package gui.utility.manager;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -30,6 +31,11 @@ import java.util.stream.Collectors;
 public class GridManager {
 
     /**
+     *
+     */
+    private static final double COMPUTED_SIZE = -1.0;
+
+    /**
      * The GridPane being managed.
      */
     private final GridPane gridPane;
@@ -46,7 +52,7 @@ public class GridManager {
     /**
      * Scale percentage value.
      */
-    private static final int SCALE_PERCENTAGE = 100;
+    private static final int SCALE_PERCENTAGE = -1;
 
     /**
      * Initialise GridManager by providing the GridPane.
@@ -103,8 +109,11 @@ public class GridManager {
         for (int i = 0; i < columns; i++) {
             final ColumnConstraints c = new ColumnConstraints();
             c.setHgrow(Priority.ALWAYS);
-            c.setMaxWidth(Double.MAX_VALUE);
-            c.setMinWidth(Double.MIN_VALUE);
+
+            c.setPrefWidth(COMPUTED_SIZE);
+            c.setMinWidth(COMPUTED_SIZE);
+            c.setMaxWidth(COMPUTED_SIZE);
+
             c.setHalignment(HPos.CENTER);
             c.setPercentWidth(SCALE_PERCENTAGE);
             gridPane.getColumnConstraints().add(c);
@@ -134,11 +143,15 @@ public class GridManager {
      */
     public void setRowCount(final int rows) {
         gridPane.getRowConstraints().clear();
+
         for (int i = 0; i < rows; i++) {
             final RowConstraints r = new RowConstraints();
             r.setVgrow(Priority.ALWAYS);
-            r.setMaxHeight(Double.MAX_VALUE);
-            r.setMinHeight(Double.MIN_VALUE);
+
+            r.setMinHeight(COMPUTED_SIZE);
+            r.setPrefHeight(COMPUTED_SIZE);
+            r.setMaxHeight(COMPUTED_SIZE);
+
             r.setPercentHeight(SCALE_PERCENTAGE);
             r.setValignment(VPos.CENTER);
             gridPane.getRowConstraints().add(r);
