@@ -1,10 +1,9 @@
 package gui.main;
 
-import gui.option.builder.OptionPicker;
-import gui.utility.FXMLScene;
-import gui.utility.FXMLSceneController;
+import gui.optionbuilder.OptionPicker;
+import gui.utility.fxmlscene.FXMLScene;
 import gui.utility.fxmldialog.FXMLDialog;
-import gui.utility.input.DialogFXML;
+import gui.utility.input.FXMLScenes;
 import gui.utility.input.fileinput.FileInputController;
 import gui.utility.manager.GridManager;
 import gui.utility.gui.TrackerWindow;
@@ -75,12 +74,14 @@ public class Controller {
      * Loads the Option Builder Scene.
      */
     public void loadOptionBuilder() {
-        FXMLSceneController controller = new OptionPicker();
-        FXMLScene scene = new FXMLScene(controller);
+        // Construct scene from class extending FXMLSceneController
+        FXMLScene scene = new FXMLScene(new OptionPicker());
 
+        // Create stage, and set scene
         Stage s = new Stage();
         s.setScene(scene.getScene());
 
+        // poof
         s.showAndWait();
     }
 
@@ -89,10 +90,10 @@ public class Controller {
      */
     @FXML
     private void downloadSingle() throws IOException {
-        FXMLDialog<File> e = new FXMLDialog<>(DialogFXML.FILE_INPUT.getFxml());
+        FXMLDialog<File> e = new FXMLDialog<>(FXMLScenes.FILE_INPUT.getFxml());
         FileInputController fic = (FileInputController) e.getController();
 
-        fic.listFiles(gui.option.builder.Controller.SAVES_DIR.listFiles());
+        fic.listFiles(OptionPicker.SAVES_DIR.listFiles());
 
         Optional<File> result = e.showAndWait();
 

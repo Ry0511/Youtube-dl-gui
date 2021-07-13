@@ -1,4 +1,4 @@
-package gui.utility;
+package gui.utility.fxmlscene;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,9 +12,32 @@ import java.net.URL;
 /**
  * FXML File Scene loader and Object Data Storage Object; allowing the
  * grabbing of all relevant FXML Object data, and it's Controller class.
+ * <p>
+ *
+ * Usage Extending Controller (Allows access to the instantiated
+ * {@link FXMLScene}):<br><br>
+ * <code>
+ *     // Construct scene from class extending FXMLSceneController<br>
+ *     FXMLScene scene = new FXMLScene(new OptionPicker());<br><br>
+ *     // Create stage, and set scene<br>
+ *     Stage s = new Stage();<br>
+ *     s.setScene(scene.getScene());<br><br>
+ *     // poof<br>
+ *     s.showAndWait();<br><br>
+ * </code>
+ * <p>
+ *
+ * <p>
+ * Extra Constructor provided to allow the loading from a {@link URL} in
+ * which everything is the same as above except providing the URL instead of
+ * the Controller.
+ *
+ * <p>
+ * To grab the controller use the methods provided here
+ * {@link #getController()}.
  *
  * @author -Ry
- * @version 0.1
+ * @version 0.3
  * Copyright: N/A
  */
 public class FXMLScene {

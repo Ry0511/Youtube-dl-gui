@@ -13,7 +13,7 @@ import java.net.URL;
  * @version 0.1
  * Copyright: N/A
  */
-public enum DialogFXML {
+public enum FXMLScenes {
     STRING_INPUT(TextInputController.class.getResource("Text_Input.fxml")),
     FILE_INPUT(FileInputController.class.getResource("File_Input.fxml"));
 
@@ -25,7 +25,7 @@ public enum DialogFXML {
     /**
      * Initialises the enum and assigns the URL of the FXML file to the
      */
-    DialogFXML(final URL url) {
+    FXMLScenes(final URL url) {
         this.fxml = url;
     }
 

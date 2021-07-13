@@ -1,14 +1,23 @@
-package gui.utility;
+package gui.utility.fxmlscene;
 
 import java.net.URL;
 
 /**
- *
+ * FXML Scene Controller which is to be used in conglomeration with
+ * {@link FXMLScene}, this template Class defines the needed methods to allow
+ * the ease of work, with the FXML Scene and linking of their respective
+ * methods, and instances.
+ * <p>
+ * This class allows the FXML File type to be loaded and controlled simply
+ * with a few method calls. For complete usage see {@link FXMLScene}.
+ * @author -Ry
+ * @version 0.1
+ * Copyright: N/A
  */
 public abstract class FXMLSceneController {
 
     /**
-     *
+     * {@link FXMLScene} which initialised this Controller.
      */
     private FXMLScene scene;
 

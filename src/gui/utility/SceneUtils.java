@@ -1,7 +1,7 @@
 package gui.utility;
 
 import gui.utility.fxmldialog.FXMLDialog;
-import gui.utility.input.DialogFXML;
+import gui.utility.input.FXMLScenes;
 import gui.utility.input.fileinput.FileInputController;
 import gui.utility.input.stringinput.TextInputController;
 
@@ -26,6 +26,11 @@ public final class SceneUtils {
     public static final String ALT_EXIT = "No file grabbed";
 
     /**
+     *
+     */
+    private static final String INVALID_FILE_CHARS = "[^a-zA-Z0-9.\\-]";
+
+    /**
      * Hide constructor.
      */
     private SceneUtils() {
@@ -45,7 +50,7 @@ public final class SceneUtils {
             throws IOException {
 
         FXMLDialog<String> fxmlDialog =
-                new FXMLDialog<>(DialogFXML.STRING_INPUT.getFxml());
+                new FXMLDialog<>(FXMLScenes.STRING_INPUT.getFxml());
 
         // Set text data
         TextInputController controller = (TextInputController)
@@ -68,13 +73,28 @@ public final class SceneUtils {
      */
     public static File promptUserGetFile(final File[] file) throws IOException {
         final FXMLDialog<File> e =
-                new FXMLDialog<>(DialogFXML.FILE_INPUT.getFxml());
+                new FXMLDialog<>(FXMLScenes.FILE_INPUT.getFxml());
         final FileInputController fic = (FileInputController) e.getController();
         fic.listFiles(file);
 
         final Optional<File> result = e.showAndWait();
 
         return result.orElseGet(() -> new File(ALT_EXIT));
+    }
+
+    /**
+     *
+     */
+    public static File promptUserGetFileName(final String header,
+                                                   final String description)
+            throws IOException {
+        String s = promptUserGetString(header, description);
+
+        // Remove invalid chars
+        s = s.replaceAll(INVALID_FILE_CHARS, "");
+        s = s.replaceAll(" ", "_");
+
+        return new File(s);
     }
 
     /**
