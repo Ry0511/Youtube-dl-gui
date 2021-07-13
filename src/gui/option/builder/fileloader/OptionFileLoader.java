@@ -63,9 +63,14 @@ public class OptionFileLoader {
      * Allows the user to see a list of files in which they can, delete, or
      * select a file from the list.
      *
+     * @param title Window Title Name.
+     * @param width Window Default Width.
+     * @param height Window Default Height.
+     * @param dir Root folder containing Files to list in the selection.
+     *
      * @return A selected file from the user, if the user selects a file. Or
-     * if the user deletes all files and there are not files, or if the
-     * window is closed using the 'X' then 'null' is returned.
+     * if the user deletes all files/are no files left, or if the
+     * window is closed using the 'X' then {@code 'null'} is returned.
      */
     public static File getSelection(final String title,
                                     final int width,

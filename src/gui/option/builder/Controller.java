@@ -4,7 +4,6 @@ import gui.main.Main;
 import gui.option.builder.fileloader.OptionFileLoader;
 import gui.utility.SceneUtils;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,21 +15,22 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import youtube.dl.wrapper.command.builder.YoutubeCommandBuilder;
 import youtube.dl.wrapper.command.builder.YoutubeHelp;
 import youtube.dl.wrapper.command.builder.YoutubeOption;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Random;
+
+import static gui.utility.SceneUtils.marshallObject;
+import static gui.utility.SceneUtils.unmarshallXml;
+import static gui.utility.SceneUtils.unnamedFile;
 
 /**
  * Controller Class for the Option Builder Scene. Which allows the user to
@@ -67,8 +67,13 @@ public class Controller {
     /**
      * File reference to the save location for the Option Builder.
      */
-    private static final File SAVES_DIR = new File(Main.ABSOLUTE_PATH
+    public static final File SAVES_DIR = new File(Main.ABSOLUTE_PATH
             + "/option/saved/");
+
+    /**
+     * Reference to the FXML File containing the Scene Object data.
+     */
+    private static final String FXML_FILE = "Option_Picker.fxml";
 
     /**
      * Populates the {@link #optionView} with all the items inside of
@@ -94,22 +99,10 @@ public class Controller {
     }
 
     /**
-     * Loads the Option Picker scene ({@code this}), this sets up the
-     * backend and then calls {@link Main#showNewStage(Scene, String)} to set
-     * the main scene to {@code this} scene.
+     * @return FXML File for this Controller class.
      */
-    public static void loadScene() throws IOException {
-        final String optionScene = "Option_Picker.fxml";
-        final String title = "Option Builder";
-        FXMLLoader loader =
-                new FXMLLoader(Controller.class.getResource(optionScene));
-        Parent root = loader.load();
-        Controller e = loader.getController();
-        e.initialise();
-
-        final int width = 852;
-        final int height = 512;
-        Main.showNewStage(new Scene(root, width, height), title);
+    public static URL getFXML() {
+        return Controller.class.getResource(FXML_FILE);
     }
 
     /**
@@ -129,31 +122,36 @@ public class Controller {
 
     /**
      * Moves the selected Option to the {@link #selectedView}.
+     *
      * @param event Mouse Event attached to the Mouse button which triggered
      *              this method.
      */
     public void addOption(final MouseEvent event) throws IOException {
-        selectionChanged(this.optionView
-                .getSelectionModel().getSelectedItem());
-        if (isDoubleClick(event, MouseButton.PRIMARY)) {
-            addSelectedOption();
+        YoutubeOption option =
+                optionView.getSelectionModel().getSelectedItem();
+        if (option != null) {
+            selectionChanged(option);
+            if (isDoubleClick(event, MouseButton.PRIMARY)) {
+                addSelectedOption();
+            }
         }
     }
 
     /**
-     * @return String User input from a dialog window.
      * @param e YT option which contains the content display message.
+     * @return String User input from a dialog window.
      */
     private String getUserInput(final YoutubeOption e) throws IOException {
-        String content = e.name()
-                + "\n"
-                + e.getHelp(YoutubeHelp.EN);
-        return SceneUtils.promptUserGetString(content);
+        final String header = String.format("%s [%s]", e.name(), e.getCommand());
+
+        return SceneUtils.promptUserGetString(header, e.getHelp(YoutubeHelp.EN));
     }
 
     /**
      * Updates the {@link #textArea} text to display the currently selected
-     * {@link YoutubeOption}.
+     * {@link YoutubeOption} and it's related information.
+     *
+     * @param e The Option to display information about.
      */
     private void selectionChanged(final YoutubeOption e) throws IOException {
         String s = String.format("%s%n%n%s%n%n%s",
@@ -166,16 +164,22 @@ public class Controller {
     /**
      * Reloads the main Scene using {@link Main#restoreMainScene()}.
      */
-    public void showMainScene(final ActionEvent actionEvent) {
-        Main.restoreMainScene();
+    @FXML
+    private void showMainScene() {
+
     }
 
     /**
      * Removes the selected option from the {@link #selectedView}.
+     *
+     * @param event Mouse Event which triggerred the event.
      */
     @FXML
     private void removeOption(final MouseEvent event) throws IOException {
-        if (selectedView.getItems().size() > 0) {
+        // Could get away with only verifying the selected item
+        final Object selectedItem =
+                selectedView.getSelectionModel().getSelectedItem();
+        if (selectedView.getItems().size() > 0 && selectedItem != null) {
             selectionChanged(this.selectedView
                     .getSelectionModel().getSelectedItem());
             if (isDoubleClick(event, MouseButton.PRIMARY)) {
@@ -189,9 +193,11 @@ public class Controller {
      * {@link KeyCode#DOWN} the currently displayed help text at
      * {@link #textArea} will be updated to whatever item is currently
      * selected. (Based on which target option triggered the event).
+     *
+     * @param event Key event which triggered the event.
      */
     @FXML
-    private void updateDisplayOption(KeyEvent event)
+    private void updateDisplayOption(final KeyEvent event)
             throws IOException {
         boolean isUpArrow =
                 event.getCode().getName().equals(KeyCode.UP.getName());
@@ -203,11 +209,11 @@ public class Controller {
         if (event.getTarget().equals(selectedView)) {
             listView = selectedView;
         }
-        ObservableList<YoutubeOption> optionView = listView.getItems();
+        ObservableList<YoutubeOption> list = listView.getItems();
 
 
         // Only update target on Arrow up/down
-        if (optionView.size() > 1) {
+        if (list.size() > 1) {
             if (isUpArrow || isDownArrow) {
 
                 // Option display checking
@@ -216,10 +222,10 @@ public class Controller {
 
                 // index checking
                 int curIndex = listView.getSelectionModel().getSelectedIndex();
-                int index = indexFind(curIndex, optionView, isUpArrow);
+                int index = indexFind(curIndex, list, isUpArrow);
 
                 // Updating
-                selectionChanged(optionView.get(index));
+                selectionChanged(list.get(index));
             }
         }
     }
@@ -228,10 +234,17 @@ public class Controller {
      * Increments or Decrements an item based on its index inside of the
      * List, note it only does so if it is inbounds and will not cause a
      * {@link IndexOutOfBoundsException}.
+     *
+     * @param curIndex  Current index to increment.
+     * @param isUpArrow If true index is decremented, else it is incremented.
+     * @param items     List of items containing size scope (0 to length -1)
+     * @return Incremented index or decremented index if those indexes are in
+     * bounds. But if they're not inbounds then it returns the index
+     * unmodified.
      */
     private static int indexFind(final int curIndex,
-                                 ObservableList<YoutubeOption> items,
-                                 boolean isUpArrow) {
+                                 final ObservableList<YoutubeOption> items,
+                                 final boolean isUpArrow) {
         // Shift index by +1 or -1 depending on arrow key pressed
         int index = isUpArrow ? -1 : 1;
         index = curIndex + index;
@@ -248,6 +261,9 @@ public class Controller {
     /**
      * Parses the {@link #selectedView} and all the {@link YoutubeOption}
      * contained into a Single {@link YoutubeCommandBuilder} Object.
+     *
+     * @return All Selected 'Options' inside of {@link #selectedView} parsed
+     * into a {@link YoutubeCommandBuilder}. (Can return an empty builder).
      */
     private YoutubeCommandBuilder parseSelected() {
         ObservableList<YoutubeOption> optionList = selectedView.getItems();
@@ -262,12 +278,13 @@ public class Controller {
      *
      */
     public void addSelectedOption() throws IOException {
-        YoutubeOption e = optionView.getSelectionModel().getSelectedItem();
-
-        if (e.requiresInput()) {
-            e.setUserInput(getUserInput(e));
+        YoutubeOption option = optionView.getSelectionModel().getSelectedItem();
+        if (option != null) {
+            if (option.requiresInput()) {
+                option.setUserInput(getUserInput(option));
+            }
+            selectedView.getItems().add(option);
         }
-        selectedView.getItems().add(e);
     }
 
     /**
@@ -303,14 +320,10 @@ public class Controller {
      */
     public void saveOption() throws JAXBException, IOException {
         if (selectedView.getItems().size() > 0) {
-            String xmlData = marshallObject(parseSelected());
+            String xmlData = marshallObject(parseSelected(),
+                    YoutubeCommandBuilder.class);
 
-            // File name
-            final String promptText = "What should this 'Option' be " +
-                    "called/referenced as?";
-            String fileName = SceneUtils.promptUserGetString(promptText);
-            fileName = ensureFileName(fileName);
-
+            String fileName = getFileName();
 
             // Write to File
             File output = new File(SAVES_DIR + "/" + fileName);
@@ -330,48 +343,42 @@ public class Controller {
     }
 
     /**
-     *
+     * @return Asks the 'User' for a String and if the string they provide is
+     * valid then it's returned but if it's not then a prefix is used which
+     * is "UnnamedFile_x" where 'x' is just an Integer value.
+     */
+    private String getFileName() throws IOException {
+        final String header = "Enter a filename.";
+        final String promptText = "What should this 'Option' be "
+                + "called/referenced as?";
+        String fileName = SceneUtils.promptUserGetString(header, promptText);
+
+        return ensureFileName(fileName);
+    }
+
+    /**
+     * Ensures that the provided Filename is a valid one, by applying some
+     * verification checks and replacing all invalid characters with '_'.
+     * However if the provided filename is an Empty String then the returned
+     * String is prefixed to: "UnnamedFile_x" where 'x' is the largest found
+     * instance of the files matching "UnnamedFile_x".
+     * <p>
+     * @param fileName Filename to verify.
+     * @return Filename which is a valid Path and that does not contain
+     * illegal characters. Default exit value is: "UnnamedFile_x" where 'x' is
+     * the largest number of that prefix.
      */
     private String ensureFileName(final String fileName) {
-        String name = fileName.replaceAll(" ", "_");
+        final String invalidChars = "[^a-zA-Z0-9.\\-]";
+        String name = fileName.replaceAll(invalidChars, "_");
         final String extension = ".xml";
 
         // If no name is typed give it one
         if (name.length() == 0) {
-            Random r = new Random();
-            final int limit = 999_999_999;
-            name = String.valueOf(r.nextInt(limit));
+            // If multiple un named files
+            name = unnamedFile(SAVES_DIR, "UnnamedFile_");
         }
 
         return name + extension;
-    }
-
-    /**
-     *
-     */
-    private String marshallObject(YoutubeCommandBuilder e) throws JAXBException {
-        // Setup marshalling
-        JAXBContext context =
-                JAXBContext.newInstance(YoutubeCommandBuilder.class);
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        // Marshall object
-        StringWriter sw = new StringWriter();
-        YoutubeCommandBuilder builder = parseSelected();
-        marshaller.marshal(builder, sw);
-
-        return sw.toString();
-    }
-
-    /**
-     *
-     */
-    private Object unmarshallXml(final File xml, final Class<?> objClass)
-            throws JAXBException {
-        JAXBContext context =
-                JAXBContext.newInstance(objClass);
-        Unmarshaller jaxbUnmarshaller = context.createUnmarshaller();
-        return jaxbUnmarshaller.unmarshal(xml);
     }
 }

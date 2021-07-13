@@ -44,6 +44,11 @@ public class GridManager {
     private Object[][] storedNodes;
 
     /**
+     * Scale percentage value.
+     */
+    private static final int SCALE_PERCENTAGE = 100;
+
+    /**
      * Initialise GridManager by providing the GridPane.
      *
      * @param gp The GridPane being Managed.
@@ -101,7 +106,7 @@ public class GridManager {
             c.setMaxWidth(Double.MAX_VALUE);
             c.setMinWidth(Double.MIN_VALUE);
             c.setHalignment(HPos.CENTER);
-            c.setPercentWidth(100);
+            c.setPercentWidth(SCALE_PERCENTAGE);
             gridPane.getColumnConstraints().add(c);
         }
     }
@@ -134,7 +139,7 @@ public class GridManager {
             r.setVgrow(Priority.ALWAYS);
             r.setMaxHeight(Double.MAX_VALUE);
             r.setMinHeight(Double.MIN_VALUE);
-            r.setPercentHeight(100);
+            r.setPercentHeight(SCALE_PERCENTAGE);
             r.setValignment(VPos.CENTER);
             gridPane.getRowConstraints().add(r);
         }
@@ -193,7 +198,7 @@ public class GridManager {
 
     /**
      * Populates the Grid with all non-null entries from the provided
-     * Object[][];
+     * Object[][].
      */
     public void populateGrid(final Object[][] nodes) {
         // Iterate Rows
@@ -262,13 +267,13 @@ public class GridManager {
     }
 
     /**
-     *
+     * Let's play operation kids.................
      */
-    public void iterateAndApply(final Consumer<Object> eds) {
+    public void iterateAndApply(final Consumer<Object> operation) {
         for (Object[] storedNode : this.storedNodes) {
             for (final Object o : storedNode) {
                 if (o != null) {
-                    eds.accept(o);
+                    operation.accept(o);
                 }
             }
         }

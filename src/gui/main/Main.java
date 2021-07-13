@@ -9,13 +9,20 @@ import javafx.stage.Stage;
 import java.io.File;
 
 /**
- * Scene GUI Launcher.
+ * Scene GUI Launcher. Will need an overhaul soon in-order to clean up the
+ * messy code.
  *
  * @author -Ry
  * @version 0.1
  * Copyright: N/A
  */
 public class Main extends Application {
+
+    /**
+     * {@link System#lineSeparator()} doesn't do what I want as it returns
+     * '\r' on Windows which doesn't match new lines properly.
+     */
+    public static final String LINE_SEPARATOR = "\n";
 
     /**
      * Static name of the FXML file for the Main scene.
@@ -43,12 +50,14 @@ public class Main extends Application {
     private static Controller mainController;
 
     /**
-     *
+     * Current Absolute path from user root.
      */
     public static final String ABSOLUTE_PATH = new File("").getAbsolutePath();
 
     /**
+     * Initialises Stage and Scene.
      *
+     * @param stage Stage to construct.
      */
     @Override
     public void start(final Stage stage) throws Exception {
@@ -80,12 +89,15 @@ public class Main extends Application {
      * @param args {@link #start(Stage)} and
      *             {@link Application#launch(String...)}
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 
     /**
+     * Shows a new Stage in place of the "Main" Stage.
      *
+     * @param title Title of the new Stage.
+     * @param scene Items/Scene to show on the new Stage.
      */
     public static void showNewStage(final Scene scene, final String title) {
         primaryStage.setTitle(title);
