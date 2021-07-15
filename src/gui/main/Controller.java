@@ -3,16 +3,19 @@ package gui.main;
 import gui.downloadtracker.TrackerWindow;
 import gui.downloadtracker.trackercontainer.TrackerContainer;
 import gui.optionbuilder.OptionPicker;
+import gui.utility.SceneUtils;
 import gui.utility.fxmlscene.FXMLScene;
 import gui.utility.fxmldialog.FXMLDialog;
-import gui.utility.input.FXMLScenes;
-import gui.utility.input.fileinput.FileInputController;
+import gui.utility.fxmldialog.dialogs.FXMLScenes;
+import gui.utility.fxmldialog.dialogs.fileinput.FileInputController;
 import gui.utility.manager.GridManager;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import youtube.dl.wrapper.command.builder.YoutubeCommandBuilder;
 import youtube.dl.wrapper.ytdl.YoutubeDl;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -52,17 +55,62 @@ public class Controller {
     private GridManager gridManager;
 
     /**
+     *
+     */
+    private static YoutubeCommandBuilder getBuilder() throws IOException,
+            JAXBException {
+        FXMLDialog<File> e = new FXMLDialog<>(FXMLScenes.FILE_INPUT.getFxml());
+        FileInputController fic = (FileInputController) e.getController();
+
+        fic.listFiles(OptionPicker.SAVES_DIR.listFiles());
+
+        Optional<File> result = e.showAndWait();
+
+        if (result.isPresent()) {
+            return (YoutubeCommandBuilder) SceneUtils
+                    .unmarshallXml(result.get(), YoutubeCommandBuilder.class);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     */
+    private static FXMLScene buildTrackerContainer() {
+        FXMLScene e = new FXMLScene(new TrackerContainer());
+        Stage s = new Stage();
+        s.setScene(e.getScene());
+        s.setTitle("Tracker Container");
+        return e;
+    }
+
+    /**
+     * Constructs a Tracker Window Object.
+     *
+     * @return Constructed tracker window; through the means of FXMLScene.
+     */
+    private static FXMLScene buildTrackerWindow() {
+        return new FXMLScene(new TrackerWindow());
+    }
+
+    /**
+     * @return String Link to a webpage.
+     */
+    private static String getLink() throws IOException {
+        final String header = "Post a single link to download...";
+        final String desc = "Link should not contain any new lines and should"
+                + " conform to the Universal Resource Loader requirements.";
+
+        return SceneUtils.promptUserGetString(header, desc);
+    }
+
+    /**
      * This will be removed, as it's primarily for testing. In it's place it
      * there will just be information about yt-dl, and ffmpeg.
      */
     public void initialise() {
-        FXMLScene e = new FXMLScene(new TrackerContainer());
-
-        Stage s = new Stage();
-        s.setScene(e.getScene());
-
-        s.setTitle("Tracker Window");
-        s.showAndWait();
+        // todo remove this?
     }
 
     /**
@@ -84,16 +132,21 @@ public class Controller {
      *
      */
     @FXML
-    private void downloadSingle() throws IOException {
-        FXMLDialog<File> e = new FXMLDialog<>(FXMLScenes.FILE_INPUT.getFxml());
-        FileInputController fic = (FileInputController) e.getController();
+    private void downloadSingle() throws IOException, JAXBException {
+        // Setup view
+        final YoutubeCommandBuilder ytb = getBuilder();
+        final String link  = getLink();
+        FXMLScene container = buildTrackerContainer();
+        FXMLScene task = buildTrackerWindow();
 
-        fic.listFiles(OptionPicker.SAVES_DIR.listFiles());
+        // Assign task to container
+        TrackerWindow tw = (TrackerWindow) task.getController();
+        TrackerContainer tc = (TrackerContainer) container.getController();
+        tc.addTask(tw);
 
-        Optional<File> result = e.showAndWait();
-
-        result.ifPresent(file ->
-                System.out.printf("%nObtained a result!!! [%s]%n", file));
+        // Start task
+        container.getStage().show();
+        YT_DL.windowsDownload(link, ytb, tw::acceptDownload);
     }
 
     /**
@@ -107,7 +160,20 @@ public class Controller {
      *
      */
     @FXML
-    private void runSingle() {
+    private void runSingle() throws JAXBException, IOException {
+        // Setup view
+        YoutubeCommandBuilder ytb = getBuilder();
+        FXMLScene container = buildTrackerContainer();
+        FXMLScene task = buildTrackerWindow();
+
+        // Assign task to container
+        TrackerWindow tw = (TrackerWindow) task.getController();
+        TrackerContainer tc = (TrackerContainer) container.getController();
+        tc.addTask(tw);
+
+        // Start task
+        container.getStage().show();
+        YT_DL.windowsExec(ytb, tw::acceptCommand);
     }
 
     /**

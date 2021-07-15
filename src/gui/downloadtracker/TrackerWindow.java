@@ -2,6 +2,9 @@ package gui.downloadtracker;
 
 import gui.downloadtracker.trackercontainer.TrackerContainer;
 import gui.utility.fxmlscene.FXMLSceneController;
+import gui.utility.fxmlscene.alerts.DefaultAlert;
+import gui.utility.fxmlscene.alerts.FXMLAlert;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -9,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import youtube.dl.wrapper.consolemessage.DataPrefix;
+import youtube.dl.wrapper.consolemessage.DownloadMessage;
 
 import java.lang.reflect.MalformedParametersException;
 import java.net.URL;
@@ -152,7 +157,7 @@ public class TrackerWindow extends FXMLSceneController {
      * @param s Message to display.
      */
     public void setConsoleMessage(final String s) {
-        this.consoleLog.append(s).append("\n");
+        this.consoleLog.append(s).append(System.lineSeparator());
         this.consoleTextArea.setText(s);
     }
 
@@ -181,10 +186,10 @@ public class TrackerWindow extends FXMLSceneController {
      *
      */
     public void getLog() {
-        Alert e = new Alert(Alert.AlertType.INFORMATION);
-        e.setTitle("Log Information...");
-        e.setHeaderText(consoleLog.toString());
-        e.showAndWait();
+        FXMLAlert alert = new FXMLAlert(DefaultAlert.TEXT_ALERT);
+        alert.setHeader("Log information");
+        alert.setDescription(consoleLog.toString());
+        alert.showAndWait();
     }
 
     /**
@@ -192,5 +197,42 @@ public class TrackerWindow extends FXMLSceneController {
      */
     public void abortTask() {
         this.parentContainer.removeWindow(this);
+        System.gc();
+    }
+
+    /**
+     *
+     */
+    public void acceptCommand(final Object o) {
+        String msg = (String) o;
+
+        Runnable exec = () -> this.setConsoleMessage(msg.trim());
+
+        Platform.runLater(exec);
+    }
+
+    /**
+     *
+     */
+    public void acceptDownload(final Object o) {
+        String msg = (String) o;
+        DownloadMessage dm = new DownloadMessage(msg);
+
+        Runnable r = () -> {
+            if (dm.isDownloadMessage()) {
+                // Speed
+                this.speedLabel.setText(dm.getSpeedDataValue()
+                        .toStringAs(DataPrefix.MB));
+
+                // Eta
+                this.etaLabel.setText(dm.getEtaInSeconds() + "s");
+
+                // Progress
+                this.progressBar.setProgress(dm.getPercentAsDouble() / 100.0);
+            }
+            setConsoleMessage(msg);
+        };
+
+        Platform.runLater(r);
     }
 }

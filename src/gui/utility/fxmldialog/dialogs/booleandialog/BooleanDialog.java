@@ -1,39 +1,44 @@
-package gui.utility.input.stringinput;
+package gui.utility.fxmldialog.dialogs.booleandialog;
 
 import gui.utility.fxmldialog.FXMLDialogController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
 /**
- * Dialog which contains a 'Header' label and two Text Areas, One for
- * Description the other for the user to type into.
+ * Dialog Box which returns a Boolean value.
  *
  * @author -Ry
  * @version 0.1
  * Copyright: N/A
  */
-public class TextInputController extends FXMLDialogController<String> {
+public class BooleanDialog extends FXMLDialogController<Boolean> {
+
+    /**
+     * Reference to the Yes Button.
+     */
+    @FXML
+    public Button yesBtn;
+
+    /**
+     * Reference to the Description text box.
+     */
+    @FXML
+    public TextArea descriptionTextArea;
 
     /**
      * Reference to the header label.
      */
     @FXML
-    private Label headerLabel;
+    public Label headerLabel;
 
     /**
-     * Reference to the Input text where the user will type their data/answer.
+     * Result of this dialog.
      */
-    @FXML
-    private TextArea inputText;
-
-    /**
-     * Reference to the description text where the information related to the
-     * header is held.
-     */
-    @FXML
-    private TextArea descriptionText;
+    private boolean result;
 
     /**
      * Upon the Dialog being 'completed' or terminated by the user, this
@@ -52,34 +57,36 @@ public class TextInputController extends FXMLDialogController<String> {
      * @return 'Default Value' or the data this Dialog has been given.
      */
     @Override
-    protected String getResult() {
-        return inputText.getText();
+    protected Boolean getResult() {
+        return result;
     }
 
     /**
-     * Closes the scene, sets the result and exits.
+     * Sets the result and then exits.
+     *
+     * @param actionEvent Result is based on this.
      */
-    @FXML
-    private void closeScene() {
+    public void btnClicked(ActionEvent actionEvent) {
+        result = actionEvent.getSource().equals(yesBtn);
         this.getDialog().setResult(getResult());
         this.getDialog().close();
     }
 
     /**
-     * Sets the Header Label text to the provided text.
+     * Set the header label text to the provided text.
      *
-     * @param text Provided text to use as the header (Not window title).
+     * @param s Header text to use.
      */
-    public void setHeaderLabel(final String text) {
-        this.headerLabel.setText(text);
+    public void setHeader(final String s) {
+        this.headerLabel.setText(s);
     }
 
     /**
-     * Sets the description of the header to the provided text.
+     * Set the description to the provided text.
      *
-     * @param desc Provided text to use as the description for the header.
+     * @param s Description text.
      */
-    public void setDescriptionText(final String desc) {
-        this.descriptionText.setText(desc);
+    public void setDescription(final String s) {
+        this.descriptionTextArea.setText(s);
     }
 }

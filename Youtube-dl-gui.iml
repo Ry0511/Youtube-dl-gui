@@ -13,6 +13,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="commons-io-2.8.0" level="project" />
-    <orderEntry type="library" name="YoutubeDlWrapper" level="project" />
+    <orderEntry type="library" name="YoutubeDlWrapper-14-07-2021" level="project" />
   </component>
 </module>

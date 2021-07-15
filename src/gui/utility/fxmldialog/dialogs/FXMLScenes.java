@@ -1,7 +1,8 @@
-package gui.utility.input;
+package gui.utility.fxmldialog.dialogs;
 
-import gui.utility.input.fileinput.FileInputController;
-import gui.utility.input.stringinput.TextInputController;
+import gui.utility.fxmldialog.dialogs.booleandialog.BooleanDialog;
+import gui.utility.fxmldialog.dialogs.fileinput.FileInputController;
+import gui.utility.fxmldialog.dialogs.stringinput.TextInputController;
 
 import java.net.URL;
 
@@ -14,8 +15,11 @@ import java.net.URL;
  * Copyright: N/A
  */
 public enum FXMLScenes {
+    // Could be improved, but works fine for now.
+    //todo improve
     STRING_INPUT(TextInputController.class.getResource("Text_Input.fxml")),
-    FILE_INPUT(FileInputController.class.getResource("File_Input.fxml"));
+    FILE_INPUT(FileInputController.class.getResource("File_Input.fxml")),
+    BOOLEAN_INPUT(BooleanDialog.class.getResource("Boolean_Dialog.fxml"));
 
     /**
      * Referenced FXML file as a URL ready to be loaded as a Scene.

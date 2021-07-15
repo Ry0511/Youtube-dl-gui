@@ -3,6 +3,7 @@ package gui.utility.fxmldialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogEvent;
 import javafx.scene.control.DialogPane;
 
 import java.io.IOException;
@@ -62,7 +63,6 @@ public class FXMLDialog<T> extends Dialog<T> {
             dp.setContent(root);
             this.setDialogPane(dp);
             this.controller.setDialog(this);
-
         } else {
             throw new MalformedParametersException("'Null' .FXML file...");
         }

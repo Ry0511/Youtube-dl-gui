@@ -1,4 +1,4 @@
-package gui.utility.input.fileinput;
+package gui.utility.fxmldialog.dialogs.fileinput;
 
 import gui.utility.fxmldialog.FXMLDialogController;
 import javafx.fxml.FXML;

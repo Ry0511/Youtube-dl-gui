@@ -208,13 +208,14 @@ public class OptionPicker extends FXMLSceneController {
      *
      */
     private void updateTextOption(final YoutubeOption opt) throws IOException {
-        final String header = opt.name();
-        final String command = String.format(opt.getCommand(), opt.getArgs());
-        final String detail = opt.getHelp(DEFAULT_LANGUAGE);
+            final String header = opt.name();
 
-        textArea.setText(String.format("%s%n%n%s%n%n%s%n",
-                header, command, detail)
-        );
+            final String command = opt.getCommand();
+            final String detail = opt.getHelp(DEFAULT_LANGUAGE);
+
+            textArea.setText(String.format("%s%n%n%s%n%n%s%n",
+                    header, command, detail)
+            );
     }
 
     /**
@@ -267,16 +268,16 @@ public class OptionPicker extends FXMLSceneController {
     public void loadOption() throws IOException, JAXBException {
         final File xml = SceneUtils.promptUserGetFile(SAVES_DIR.listFiles());
 
-        final YoutubeCommandBuilder ytb = (YoutubeCommandBuilder)
-                SceneUtils.unmarshallXml(xml, YoutubeCommandBuilder.class);
+        Object o = SceneUtils.unmarshallXml(xml, YoutubeCommandBuilder.class);
+        YoutubeCommandBuilder ytb = (YoutubeCommandBuilder) o;
 
         setSelectedOptions(ytb);
     }
 
     private void setSelectedOptions(final YoutubeCommandBuilder ytb) {
-        final ObservableList<YoutubeOption> options =
-                this.selectedView.getItems();
+        ObservableList<YoutubeOption> options = this.selectedView.getItems();
         options.clear();
+
         options.addAll(ytb.getOptions());
     }
 
@@ -328,7 +329,14 @@ public class OptionPicker extends FXMLSceneController {
         final String desc = "Note that illegal filename characters will be " +
                 "removed and all spaces will be removed as well...";
 
-        return SceneUtils.promptUserGetFileName(header, desc);
+        File s = SceneUtils.promptUserGetFileName(header, desc);
+
+        if (s.getName().equals("")) {
+            s = new File(SceneUtils.unnamedFile(SAVES_DIR,
+                    "UnNamedFile_"));
+        }
+
+        return s;
     }
 
     /**
@@ -341,7 +349,10 @@ public class OptionPicker extends FXMLSceneController {
 
         if (view.size() > 0) {
             YoutubeCommandBuilder ytb = new YoutubeCommandBuilder();
-            view.forEach(ytb::addOption);
+
+            for (YoutubeOption e : view) {
+                ytb.addOption(e);
+            }
 
             return ytb;
 
@@ -438,9 +449,10 @@ public class OptionPicker extends FXMLSceneController {
      * @return User input as a String.
      */
     private String getArgs(final YoutubeOption o) throws IOException {
-        final String header = String.format("%s ~ Args [%s]", o.name(),
-                o.getArgs());
-        final String description = o.getHelp(DEFAULT_LANGUAGE);
+        final String header = o.name();
+        final String description =
+                String.format("Args: [%s]%n%n%s", o.getArgs(),
+                        o.getHelp(DEFAULT_LANGUAGE));
         return SceneUtils.promptUserGetString(header, description);
     }
 }

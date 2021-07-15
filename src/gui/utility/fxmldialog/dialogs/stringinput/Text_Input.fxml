@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="450.0" prefWidth="600.0" stylesheets="@../../../bootstrap3.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.utility.input.stringinput.TextInputController">
+<BorderPane prefHeight="450.0" prefWidth="600.0" stylesheets="@../../../../bootstrap3.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.utility.fxmldialog.dialogs.stringinput.TextInputController">
    <padding>
       <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
    </padding>

@@ -3,10 +3,12 @@ package gui.downloadtracker.trackercontainer;
 import gui.downloadtracker.TrackerWindow;
 import gui.utility.fxmlscene.FXMLScene;
 import gui.utility.fxmlscene.FXMLSceneController;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.List;
 
 /**
  *
@@ -41,7 +43,7 @@ public class TrackerContainer extends FXMLSceneController {
      */
     @Override
     protected void initialise() {
-
+        /*
         for (int i = 0; i < 9; i++) {
             FXMLScene scene = new FXMLScene(new TrackerWindow());
             TrackerWindow tc = (TrackerWindow) scene.getController();
@@ -49,11 +51,28 @@ public class TrackerContainer extends FXMLSceneController {
             tc.setParentContainer(this);
             itemVbox.getChildren().add(tc.sceneToRoot(scene.getScene()));
         }
+         */
     }
 
+    /**
+     *
+     */
     public void removeWindow(final TrackerWindow window) {
-        if (window != null) {
+        List<Node> children = itemVbox.getChildren();
+        if (window != null && children != null) {
             itemVbox.getChildren().remove(window.getBorderPane());
+
+            if (children.size() == 0) {
+                this.getScene().closeStage();
+            }
         }
+    }
+
+    /**
+     *
+     */
+    public void addTask(TrackerWindow tw) {
+        tw.setParentContainer(this);
+        itemVbox.getChildren().add(tw.getBorderPane());
     }
 }

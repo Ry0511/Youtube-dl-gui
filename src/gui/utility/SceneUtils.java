@@ -1,9 +1,10 @@
 package gui.utility;
 
 import gui.utility.fxmldialog.FXMLDialog;
-import gui.utility.input.FXMLScenes;
-import gui.utility.input.fileinput.FileInputController;
-import gui.utility.input.stringinput.TextInputController;
+import gui.utility.fxmldialog.dialogs.booleandialog.BooleanDialog;
+import gui.utility.fxmldialog.dialogs.FXMLScenes;
+import gui.utility.fxmldialog.dialogs.fileinput.FileInputController;
+import gui.utility.fxmldialog.dialogs.stringinput.TextInputController;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,7 +29,7 @@ public final class SceneUtils {
     /**
      *
      */
-    private static final String INVALID_FILE_CHARS = "[^a-zA-Z0-9.\\-]";
+    private static final String INVALID_FILE_CHARS = "^[a-zA-Z]+[0-9]+_]";
 
     /**
      * Hide constructor.
@@ -65,6 +66,25 @@ public final class SceneUtils {
     }
 
     /**
+     *
+     */
+    public static Boolean promptUserGetBoolean(final String header,
+                                               final String description)
+            throws IOException {
+        // todo Improve the FXMLDialogs, these aren't the best.
+        FXMLDialog<Boolean> fxmlDialog =
+                new FXMLDialog<>(FXMLScenes.BOOLEAN_INPUT.getFxml());
+
+        BooleanDialog bd = (BooleanDialog) fxmlDialog.getController();
+        bd.setHeader(header);
+        bd.setDescription(description);
+
+        Optional<Boolean> result = fxmlDialog.showAndWait();
+
+        return result.orElse(false);
+    }
+
+    /**
      * Shows a list of files and then allows the user to select a File from
      * the List.
      * @param file Files to show in the FileView.
@@ -77,6 +97,7 @@ public final class SceneUtils {
         final FileInputController fic = (FileInputController) e.getController();
         fic.listFiles(file);
 
+        e.setTitle("Select a File...");
         final Optional<File> result = e.showAndWait();
 
         return result.orElseGet(() -> new File(ALT_EXIT));
@@ -148,8 +169,8 @@ public final class SceneUtils {
      * @param root   Root folder containing files which match the prefix.
      * @param prefix Prefix to match.
      * @return (Prefix + ( MaxValue + 1)). Else if the root is null or the
-     * file is not a directory then (Prefix + {@link #randomInteger()}) is
-     * returned.
+     * file is not a directory then (err_ + Prefix + {@link #randomInteger()}
+     * ) is returned.
      */
     public static String unnamedFile(final File root, final String prefix) {
         // Random name matching prefix
@@ -191,7 +212,6 @@ public final class SceneUtils {
                     value = value.substring(0, value.indexOf("."));
 
                     // Only care about sub strings of integers
-                    System.out.println(value);
                     if (value.matches("^[0-9]+$")) {
                         int parsedVal = Integer.parseInt(value);
                         maxValue = Math.max(parsedVal, maxValue);

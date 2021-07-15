@@ -11,7 +11,7 @@
             minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/8.0.171"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="gui.utility.input.fileinput.FileInputController">
+            fx:controller="gui.utility.fxmldialog.dialogs.fileinput.FileInputController">
    <opaqueInsets>
       <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
    </opaqueInsets>
